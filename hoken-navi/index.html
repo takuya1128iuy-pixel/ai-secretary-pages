@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>保険のお手続きナビ（デモ）</title>
+<meta name="description" content="ご加入中の保険会社のお手続きページを、手続きの種類から探せるデモページです。">
+<meta property="og:title" content="保険のお手続きナビ（デモ）">
+<meta property="og:description" content="保険会社ごとのお手続き方法と手順をまとめてご案内します。">
+<meta property="og:type" content="website">
+<style>
+:root {
+  color-scheme: light dark;
+  --navy: #14315c;
+  --navy-soft: #24487c;
+  --accent: #0b6bcb;
+  --accent-active: #095aad;
+  --on-accent: #ffffff;
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --surface: #ffffff;
+  --header-bg: rgba(255, 255, 255, .95);
+  --pill-bg: #eef4fd;
+  --focus: #cfe0f7;
+  --line: #e2e8f2;
+  --text: #1b2430;
+  --muted: #67748a;
+  --ok-bg: #e7f6ed;
+  --ok-fg: #1a7f45;
+  --warn-bg: #fdf3e2;
+  --warn-fg: #9a6413;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgba(20, 49, 92, .06), 0 8px 24px rgba(20, 49, 92, .06);
+}
+
+/* 端末が暗い設定のときの色。トークンだけ差し替える */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --navy: #cfe0f7;
+    --navy-soft: #a9c6ea;
+    --accent: #5aa9ef;
+    --accent-active: #7cbcf3;
+    --on-accent: #06121f;
+    --bg: #0e1620;
+    --card: #16212e;
+    --surface: #1b2735;
+    --header-bg: rgba(14, 22, 32, .95);
+    --pill-bg: #1c2c40;
+    --focus: #2c4a6b;
+    --line: #26364a;
+    --text: #e6edf5;
+    --muted: #97a6b8;
+    --ok-bg: #13342350;
+    --ok-fg: #62c78d;
+    --warn-bg: #3a2c1250;
+    --warn-fg: #e0b264;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+  }
+}
+
+:root[data-theme="dark"] {
+  --navy: #cfe0f7;
+  --navy-soft: #a9c6ea;
+  --accent: #5aa9ef;
+  --accent-active: #7cbcf3;
+  --on-accent: #06121f;
+  --bg: #0e1620;
+  --card: #16212e;
+  --surface: #1b2735;
+  --header-bg: rgba(14, 22, 32, .95);
+  --pill-bg: #1c2c40;
+  --focus: #2c4a6b;
+  --line: #26364a;
+  --text: #e6edf5;
+  --muted: #97a6b8;
+  --ok-bg: #13342350;
+  --ok-fg: #62c78d;
+  --warn-bg: #3a2c1250;
+  --warn-fg: #e0b264;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+}
+
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  line-height: 1.65;
+  -webkit-text-size-adjust: 100%;
+}
+
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 16px 64px; }
+
+/* ヘッダー */
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--header-bg);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.site-header .wrap { padding-top: 12px; padding-bottom: 0; }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; color: var(--navy); }
+.brand svg { width: 24px; height: 24px; flex: none; }
+.nav { display: flex; gap: 20px; margin-top: 10px; }
+.nav button {
+  appearance: none; background: none; border: 0; padding: 8px 0 10px;
+  font: inherit; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
+}
+.nav button[aria-current="true"] { color: var(--navy); font-weight: 700; border-bottom-color: var(--accent); }
+
+/* ステップ表示 */
+.steps { display: flex; align-items: center; gap: 6px; margin: 20px 0 18px; }
+.step { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.step .num {
+  width: 28px; height: 28px; border-radius: 50%; flex: none;
+  display: grid; place-items: center; font-size: 13px; font-weight: 700;
+  background: var(--surface); color: var(--muted); border: 1px solid var(--line);
+}
+.step .cap { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.step[data-state="current"] .num { background: var(--navy); color: var(--bg); border-color: var(--navy); }
+.step[data-state="current"] .cap { color: var(--navy); font-weight: 700; }
+.step[data-state="done"] .num { background: var(--ok-bg); color: var(--ok-fg); border-color: var(--ok-bg); }
+.step .bar { flex: 1; height: 1px; background: var(--line); }
+
+/* カード */
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 18px; margin-bottom: 14px;
+}
+h1 { font-size: 22px; margin: 4px 0 8px; letter-spacing: .01em; }
+h2 { font-size: 17px; margin: 0 0 12px; }
+p.lead { color: var(--muted); margin: 0 0 4px; font-size: 14px; }
+
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--pill-bg); color: var(--navy-soft);
+  font-size: 12px; padding: 5px 11px; border-radius: 999px;
+}
+
+/* 手続きの一覧 */
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 460px) { .tiles { grid-template-columns: 1fr; } }
+.tile {
+  display: flex; gap: 12px; align-items: flex-start; text-align: left;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 14px; cursor: pointer; font: inherit; color: inherit;
+  transition: border-color .15s, transform .1s;
+}
+.tile:hover { border-color: var(--accent); }
+.tile:active { transform: scale(.99); }
+.tile .ic { font-size: 26px; line-height: 1; }
+.tile .t { font-weight: 700; font-size: 15px; }
+.tile .d { font-size: 12px; color: var(--muted); }
+
+/* 会社の一覧 */
+.search {
+  width: 100%; padding: 12px 14px; font: inherit;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: inherit;
+}
+.search:focus { outline: 2px solid var(--focus); border-color: var(--accent); }
+.list { list-style: none; margin: 12px 0 0; padding: 0; }
+.list li + li { border-top: 1px solid var(--line); }
+.row {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: none; border: 0; padding: 14px 4px; font: inherit; color: inherit;
+  cursor: pointer; text-align: left;
+}
+.row .nm { font-weight: 600; }
+.row .arrow { color: var(--muted); flex: none; }
+.badge { font-size: 11px; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.badge.direct { background: var(--ok-bg); color: var(--ok-fg); }
+.badge.list { background: var(--warn-bg); color: var(--warn-fg); }
+.empty { color: var(--muted); font-size: 14px; padding: 18px 4px; }
+
+/* 結果 */
+.result-head { display: flex; align-items: center; gap: 10px; margin-bottom: 2px; }
+.result-head .ic { font-size: 24px; }
+.cta {
+  display: block; text-align: center; text-decoration: none;
+  background: var(--accent); color: var(--on-accent); font-weight: 700;
+  padding: 15px 16px; border-radius: 12px; margin: 14px 0 10px;
+}
+.cta:active { background: var(--accent-active); }
+.sub-links { display: grid; gap: 8px; }
+.sub-link {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  text-decoration: none; color: var(--navy-soft); border: 1px solid var(--line);
+  border-radius: 10px; padding: 12px 14px; font-size: 14px; background: var(--surface);
+}
+.sub-note { display: block; font-size: 12px; color: var(--muted); line-height: 1.45; }
+.note { font-size: 13px; color: var(--muted); margin: 12px 0 0; }
+.back {
+  appearance: none; background: none; border: 0; padding: 10px 0; font: inherit;
+  color: var(--accent); cursor: pointer;
+}
+
+.disclaimer {
+  font-size: 12px; color: var(--muted); border-top: 1px solid var(--line);
+  margin-top: 26px; padding-top: 16px;
+}
+.disclaimer strong { color: var(--warn-fg); }
+
+/* キーボード操作でも今どこにいるか分かるように */
+:where(button, a, input):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>
+      </svg>
+      保険のお手続きナビ
+    </div>
+    <nav class="nav">
+      <button type="button" data-nav="top">トップ</button>
+      <button type="button" data-nav="procedures">手続きを選ぶ</button>
+      <button type="button" data-nav="contact">お問い合わせ</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="app" aria-live="polite"></main>
+
+<footer class="wrap">
+  <div class="disclaimer">
+    <p><strong>デモページです。</strong>掲載しているリンクは各保険会社の公開ページを集めたものです。
+      内容やURLは変更されることがあるため、お手続きの可否・必要書類は必ず各社の公式サイトまたはコールセンターでご確認ください。</p>
+    <p>個人情報の入力は不要です。このページは入力内容をどこにも送信しません。
+      データ更新日: <span id="updated"></span></p>
+  </div>
+</footer>
+
+<script>
+/* 保険のお手続きナビ データ
+ *
+ * リンクはすべて各社の「公開ページ」を検索で集めたもので、こちらでは開いて確認できていない。
+ * 公開前に `node tools/check-links.mjs` を実行して、生きているURLか必ず確かめること。
+ * 各社サイトはリニューアルでURLが変わりやすいので、定期的な再チェックが要る。
+ *
+ * tel は各社の公式サイトで公開されている代表窓口。telNote に窓口名と受付時間を書く。
+ * extraTels は手続き専用ダイヤルがある会社のぶん（給付金請求・控除証明書再発行など）。
+ * 受付時間は変わりやすいので、番号を足すときは必ず公式サイトで確認すること。
+ *
+ * status:
+ *   'direct' … その手続きの専用ページが分かっているもの
+ *   'list'   … 会社の「お手続き一覧」に飛ばし、そこから選んでもらうもの
+ */
+var HOKEN = {
+  updatedAt: '2026-09-05',
+
+  procedures: [
+    { id: 'address', icon: '🏠', label: '住所・氏名の変更', desc: '引っ越し・結婚などで登録内容が変わったとき' },
+    { id: 'payment', icon: '💳', label: 'クレジットカード・口座変更', desc: '保険料の引き落とし先を変えるとき' },
+    { id: 'certificate', icon: '📄', label: '控除証明書の再発行', desc: '年末調整・確定申告で使う証明書をなくしたとき' },
+    { id: 'beneficiary', icon: '👪', label: '受取人・契約者の変更', desc: '受取人や契約者を変えるとき' },
+    { id: 'claim', icon: '🏥', label: '給付金・保険金の請求', desc: '入院・手術・万一のとき' },
+    { id: 'loan', icon: '🏦', label: '契約者貸付・解約', desc: '一時的にお金が必要なとき／やめるとき' },
+  ],
+
+  companies: [
+    {
+      id: 'nissay', name: '日本生命',
+      tel: '0120-201-021', telNote: 'ニッセイコールセンター 平日9:00〜18:00／土9:00〜17:00',
+      portal: { name: 'ニッセイマイページ', url: 'https://www.nissay.co.jp/keiyaku/' },
+      top: 'https://www.nissay.co.jp/keiyaku/',
+      links: {
+        address: 'https://www.nissay.co.jp/keiyaku/tetsuzuki/henko/kojinjohohen.html',
+        certificate: 'https://www.nissay.co.jp/keiyaku/tetsuzuki/sonohoka/kojo/',
+      },
+    },
+    {
+      id: 'dai-ichi', name: '第一生命',
+      tel: '0120-157-157', telNote: '第一生命コンタクトセンター 平日9:00〜18:00／土9:00〜17:00',
+      extraTels: { claim: { tel: '0120-211-157', note: '入院・手術給付金／死亡保険金 専用ダイヤル' } },
+      portal: { name: 'ご契約者専用サイト', url: 'https://www.dai-ichi-life.co.jp/contractor/' },
+      top: 'https://www.dai-ichi-life.co.jp/contractor/change/index.html',
+      links: {
+        address: 'https://www.dai-ichi-life.co.jp/contractor/change/address/index.html',
+        payment: 'https://www.dai-ichi-life.co.jp/contractor/change/account/index.html',
+        beneficiary: 'https://www.dai-ichi-life.co.jp/contractor/change/uketori/index.html',
+      },
+    },
+    {
+      id: 'meijiyasuda', name: '明治安田生命',
+      tel: '0120-662-332', telNote: 'コミュニケーションセンター 平日9:00〜18:00／土9:00〜17:00',
+      portal: { name: 'MYほけんページ', url: 'https://www.meijiyasuda.co.jp/contractor/myhoken/' },
+      top: 'https://www.meijiyasuda.co.jp/contractor/guide/',
+      links: {
+        certificate: 'https://www.meijiyasuda.co.jp/contractor/service/detail/14.html',
+      },
+    },
+    {
+      id: 'sumitomo', name: '住友生命',
+      tel: '0120-307-506', telNote: 'スミセイコールセンター 平日9:00〜18:00／土9:00〜17:00',
+      portal: { name: 'スミセイダイレクトサービス', url: 'https://www.sumitomolife.co.jp/contract/ds/' },
+      top: 'https://www.sumitomolife.co.jp/contract/service/index.html',
+      links: {
+        address: 'https://www.sumitomolife.co.jp/contract/service/detail/coaa.html',
+      },
+    },
+    {
+      id: 'kampo', name: 'かんぽ生命',
+      tel: '0120-552-950', telNote: 'かんぽコールセンター 平日9:00〜21:00／土日祝9:00〜17:00',
+      portal: { name: 'かんぽ生命マイページ', url: 'https://www.jp-life.japanpost.jp/customer/index.html' },
+      top: 'https://www.jp-life.japanpost.jp/customer/procedure/index.html',
+      links: {
+        address: 'https://www.jp-life.japanpost.jp/customer/procedure/address.html',
+      },
+    },
+    {
+      id: 'aflac', name: 'アフラック生命',
+      tel: '0120-5555-95', telNote: 'アフラックコールセンター 平日9:00〜18:00／土9:00〜17:00',
+      extraTels: { claim: { tel: '0120-555-877', note: '給付金・保険金のご請求（オペレーター 平日9:00〜17:00）' } },
+      portal: { name: 'アフラック よりそうネット', url: 'https://www.aflac.co.jp/canet/' },
+      top: 'https://www.aflac.co.jp/keiyaku/step/index.html',
+      links: {
+        address: 'https://www.aflac.co.jp/keiyaku/step/address_change.html',
+        payment: 'https://www.aflac.co.jp/keiyaku/step/account_change.html',
+        beneficiary: 'https://www.aflac.co.jp/keiyaku/step/beneficiary_change.html',
+      },
+    },
+    {
+      id: 'metlife', name: 'メットライフ生命',
+      tel: '0120-881-796', telNote: 'カスタマーサービスセンター 月〜土9:00〜18:00',
+      portal: { name: 'ご契約者さまWEBサービス', url: 'https://www.metlife.co.jp/customer/' },
+      top: 'https://www.metlife.co.jp/customer/procedures/',
+      links: {
+        address: 'https://www.metlife.co.jp/customer/procedures/address/',
+        certificate: 'https://www.metlife.co.jp/customer/procedures/document/life/',
+      },
+    },
+    {
+      id: 'sonylife', name: 'ソニー生命',
+      tel: '0120-158-821', telNote: 'カスタマーセンター 9:00〜17:30（日曜・年末年始を除く）',
+      portal: { name: 'お客さま専用WEBサービス', url: 'https://www.sonylife.co.jp/contractor/' },
+      top: 'https://www.sonylife.co.jp/contractor/guide/',
+      links: {
+        address: 'https://www.sonylife.co.jp/contractor/guide/address/',
+        payment: 'https://www.sonylife.co.jp/contractor/guide/bank/',
+      },
+    },
+    {
+      id: 'orixlife', name: 'オリックス生命',
+      tel: '0120-506-094', telNote: 'カスタマーサービスセンター 月〜土9:00〜18:00',
+      extraTels: { certificate: { tel: '0120-155-131', note: '控除証明書の再発行など 24時間自動音声' } },
+      portal: { name: 'WEBお手続きページ', url: 'https://www.orixlife.co.jp/customer/ivr/' },
+      top: 'https://www.orixlife.co.jp/customer/',
+      links: {
+        address: 'https://faq.orixlife.co.jp/faq_detail.html?id=8401535',
+        payment: 'https://www.orixlife.co.jp/customer/procedures/payment/',
+        certificate: 'https://faq.orixlife.co.jp/faq_detail.html?id=8401577',
+      },
+    },
+    {
+      id: 'fwdlife', name: 'FWD生命',
+      tel: '0120-211-901', telNote: '総合サービスセンター 平日9:00〜18:00',
+      extraTels: { payment: { tel: '0120-622-211', note: 'クレジットカード関連 24時間自動音声' } },
+      portal: { name: 'ご契約者さまページ', url: 'https://www.fwdlife.co.jp/support/' },
+      top: 'https://www.fwdlife.co.jp/support/_procedure/',
+      links: {
+        payment: 'https://www.fwdlife.co.jp/support/procedure/payment/',
+      },
+    },
+    {
+      id: 'nnlife', name: 'エヌエヌ生命',
+      tel: '0120-521-513', telNote: 'サービスセンター 平日9:00〜17:00',
+      portal: { name: 'マイページ', url: 'https://www.nnlife.co.jp/customers/mypage' },
+      top: 'https://www.nnlife.co.jp/customers/services/list',
+      links: {
+        address: 'https://www.nnlife.co.jp/customers/services/registration/address',
+        loan: 'https://www.nnlife.co.jp/customers/services/policy_loan',
+      },
+    },
+    {
+      id: 'tmn-anshin', name: '東京海上日動あんしん生命',
+      tel: '0120-016-234', telNote: 'カスタマーセンター 平日9:00〜18:00／土9:00〜17:00',
+      extraTels: { claim: { tel: '0120-536-338', note: '保険金請求受付 平日8:00〜18:00／土9:00〜17:00' }, certificate: { tel: '0120-733-669', note: '控除証明書再発行 専用ダイヤル 平日9:00〜18:00' } },
+      portal: { name: '東京海上日動マイページ', url: 'https://www.tmn-anshin.co.jp/keiyaku/' },
+      top: 'https://www.tmn-anshin.co.jp/keiyaku/contract/',
+      links: {
+        address: 'https://www.tmn-anshin.co.jp/keiyaku/contract/address/',
+        payment: 'https://www.tmn-anshin.co.jp/keiyaku/pmethod/account/',
+      },
+    },
+    {
+      id: 'himawari', name: 'SOMPOひまわり生命',
+      tel: '0120-563-506', telNote: 'カスタマーセンター 平日9:00〜18:00／土9:00〜17:00',
+      portal: { name: 'MYひまわり', url: 'https://www.himawari-life.co.jp/customer/' },
+      top: 'https://www.himawari-life.co.jp/customer/',
+      links: {
+        address: 'https://www.himawari-life.co.jp/customer/address/',
+        payment: 'https://www.himawari-life.co.jp/customer/account/',
+        certificate: 'https://www.himawari-life.co.jp/customer/kojo/',
+        beneficiary: 'https://www.himawari-life.co.jp/customer/contractor/',
+      },
+    },
+    {
+      id: 'msa-life', name: '三井住友海上あいおい生命',
+      tel: '0120-324-386', telNote: 'カスタマーセンター 平日9:00〜18:00／土9:00〜17:00',
+      portal: { name: 'お客さまWebサービス', url: 'https://www.msa-life.co.jp/customer/service/' },
+      top: 'https://www.msa-life.co.jp/customer/msa/procedure/',
+      links: {
+        address: 'https://www.msa-life.co.jp/customer/msa/procedure/address/',
+        beneficiary: 'https://www.msa-life.co.jp/customer/change/05.html',
+      },
+    },
+    {
+      id: 'axa', name: 'アクサ生命',
+      tel: '0120-568-093', telNote: 'カスタマーサービスセンター 平日9:00〜18:00／土9:00〜17:00',
+      portal: { name: 'MyAXA', url: 'https://www.axa.co.jp/customer/' },
+      top: 'https://www.axa.co.jp/customer/',
+      links: {
+        address: 'https://www.axa.co.jp/customer/guide/change-address/',
+        beneficiary: 'https://www.axa.co.jp/customer/guide/change-customer/',
+      },
+    },
+    {
+      id: 'daido', name: '大同生命',
+      tel: '0120-789-501', telNote: 'コールセンター 平日9:00〜17:00（住所変更・控除証明書は24時間自動音声）',
+      portal: { name: 'お客さまページ', url: 'https://www.daido-life.co.jp/c_keiyaku/' },
+      top: 'https://www.daido-life.co.jp/c_keiyaku/procedure/',
+      links: {
+        address: 'https://www.daido-life.co.jp/c_keiyaku/procedure/change_address.html',
+        beneficiary: 'https://www.daido-life.co.jp/c_keiyaku/procedure/change_namet.html',
+      },
+    },
+    {
+      id: 'taiyo', name: '太陽生命',
+      tel: '0120-97-2111', telNote: 'お客様サービスセンター 平日9:00〜18:00／土9:00〜17:00',
+      portal: { name: '太陽生命マイページ', url: 'https://www.taiyo-seimei.co.jp/customer/' },
+      top: 'https://www.taiyo-seimei.co.jp/customer/procedure/index.html',
+      links: {
+        address: 'https://www.taiyo-seimei.co.jp/customer/procedure/address_c.html',
+        payment: 'https://www.taiyo-seimei.co.jp/customer/procedure/hoken_f.html',
+      },
+    },
+    {
+      id: 'gib-life', name: 'ジブラルタ生命',
+      tel: '0120-37-2269', telNote: 'カスタマーサービスセンター 平日9:00〜18:00／土9:00〜17:00',
+      portal: { name: 'Myページ', url: 'https://www.gib-life.co.jp/st/keiyaku/' },
+      top: 'https://www.gib-life.co.jp/st/keiyaku/process/index.html',
+      links: {
+        address: 'https://www.gib-life.co.jp/st/keiyaku/process/adress/',
+      },
+    },
+    {
+      id: 'prudential', name: 'プルデンシャル生命',
+      tel: '0120-810-740', telNote: 'カスタマーサービスセンター 平日9:00〜17:30／土9:00〜17:00',
+      portal: { name: 'Myページ', url: 'https://www.prudential.co.jp/contractor/' },
+      top: 'https://www.prudential.co.jp/contractor/process/',
+      links: {
+        address: 'https://www.prudential.co.jp/contractor/process/henkou/henkou02.html',
+        beneficiary: 'https://www.prudential.co.jp/contractor/process/henkou/',
+      },
+    },
+    {
+      id: 'asahi-life', name: '朝日生命',
+      tel: '0120-714-532', telNote: 'お客様サービスセンター 月〜土9:00〜17:00',
+      portal: { name: 'あさひマイページ', url: 'https://www.asahi-life.co.jp/service/' },
+      top: 'https://www.asahi-life.co.jp/service/',
+      links: {
+        address: 'https://www.asahi-life.co.jp/service/tetuzuki/t05.html',
+        beneficiary: 'https://www.asahi-life.co.jp/service/tetuzuki/t07.html',
+      },
+    },
+    {
+      id: 'fukoku', name: 'フコク生命（富国生命）',
+      tel: '0120-259-817', telNote: 'フコク生命お客さまセンター 平日9:00〜17:00',
+      portal: { name: 'ご契約者専用サービス', url: 'https://www.fukoku-life.co.jp/contract/' },
+      top: 'https://www.fukoku-life.co.jp/contract/procedure/index.html',
+      links: {
+        address: 'https://www.fukoku-life.co.jp/contract/procedure/change/01.html',
+      },
+    },
+    {
+      id: 'manulife', name: 'マニュライフ生命',
+      tel: '0120-063-730', telNote: 'コールセンター 平日9:00〜17:00',
+      portal: { name: 'マイページ', url: 'https://www.manulife.co.jp/ja/policyholder.html' },
+      top: 'https://www.manulife.co.jp/ja/policyholder/procedure.html',
+      links: {
+        address: 'https://www.manulife.co.jp/ja/policyholder/procedure/procedure-address.html',
+        payment: 'https://www.manulife.co.jp/ja/policyholder/procedure/procedure-regularpremium.html',
+        beneficiary: 'https://www.manulife.co.jp/ja/policyholder/procedure/procedure-owner.html',
+      },
+    },
+    {
+      id: 'neofirst', name: '第一ネオ生命（旧ネオファースト生命）',
+      tel: '0120-312-201', telNote: 'コンタクトセンター 9:00〜17:00（日・祝を除く）',
+      portal: { name: 'マイページ', url: 'https://neofirst.co.jp/customer/' },
+      top: 'https://neofirst.co.jp/customer/procedure/',
+      links: {
+        address: 'https://neofirst.co.jp/customer/procedure/address.html',
+      },
+    },
+    {
+      id: 'lifenet', name: 'ライフネット生命',
+      tel: '0120-205-566', telNote: 'コンタクトセンター 平日9:00〜20:00／土日祝9:00〜18:00',
+      extraTels: { claim: { tel: '0120-717-991', note: '保険金・給付金のご請求 平日9:00〜17:30' } },
+      portal: { name: 'マイページ', url: 'https://www.lifenet-seimei.co.jp/customer/' },
+      top: 'https://www.lifenet-seimei.co.jp/customer/',
+      links: {
+        address: 'https://www.lifenet-seimei.co.jp/customer/registration/',
+      },
+    },
+    {
+      id: 'zurichlife', name: 'チューリッヒ生命',
+      tel: '0120-236-523', telNote: 'カスタマーケアセンター 月〜土9:00〜18:00',
+      portal: { name: 'マイページ（Z-Life）', url: 'https://www.zurichlife.co.jp/customer/z-life/' },
+      top: 'https://www.zurichlife.co.jp/vivr/list',
+      links: {
+        address: 'https://www.zurichlife.co.jp/customer/z-life/guide/address',
+      },
+    },
+  ],
+};
+
+if (typeof module !== 'undefined') module.exports = HOKEN;
+</script>
+<script>
+/* 保険のお手続きナビ
+ * 「手続きを選ぶ → 保険会社を選ぶ → 方法を確認」の3ステップ。
+ * LINEのリッチメニューから特定の手続きへ直接飛ばせるように、URLで状態を持つ。
+ *   ?p=payment            … 手続きを指定して会社選択から始める
+ *   ?p=payment&c=orixlife … 結果画面を直接開く
+ * （#/p/payment/c/orixlife の形も同じ意味で受け付ける）
+ */
+(function () {
+  'use strict';
+
+  var app = document.getElementById('app');
+  var byId = function (list, id) { return list.filter(function (x) { return x.id === id; })[0]; };
+  var esc = function (s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  };
+
+  var state = { view: 'top', procedure: null, company: null, query: '' };
+
+  // ---- URL との同期 ------------------------------------------------------
+  function readUrl() {
+    var p = null, c = null;
+    var q = new URLSearchParams(location.search);
+    if (q.get('p')) { p = q.get('p'); c = q.get('c'); }
+    var m = location.hash.match(/^#\/p\/([\w-]+)(?:\/c\/([\w-]+))?/);
+    if (m) { p = m[1]; c = m[2] || null; }
+    if (!p) return;
+    var proc = byId(HOKEN.procedures, p);
+    if (!proc) return;
+    state.procedure = proc;
+    state.view = 'companies';
+    if (c) {
+      var comp = byId(HOKEN.companies, c);
+      if (comp) { state.company = comp; state.view = 'result'; }
+    }
+  }
+
+  function writeUrl() {
+    var hash = '';
+    if (state.procedure) {
+      hash = '#/p/' + state.procedure.id;
+      if (state.company && state.view === 'result') hash += '/c/' + state.company.id;
+    }
+    if (location.hash !== hash) history.replaceState(null, '', location.pathname + location.search + hash);
+  }
+
+  // ---- 部品 --------------------------------------------------------------
+  function stepper(current) {
+    var caps = ['手続きを選ぶ', '会社を選ぶ', '方法を確認'];
+    var html = '<div class="steps">';
+    for (var i = 0; i < 3; i++) {
+      var st = i + 1 === current ? 'current' : (i + 1 < current ? 'done' : 'todo');
+      html += '<div class="step" data-state="' + st + '">' +
+        '<span class="num">' + (st === 'done' ? '✓' : i + 1) + '</span>' +
+        '<span class="cap">' + caps[i] + '</span></div>';
+      if (i < 2) html += '<span class="bar"></span>';
+    }
+    return html + '</div>';
+  }
+
+  // 会社がその手続きの専用ページを持っているか
+  function linkFor(company, procedureId) {
+    if (company.links && company.links[procedureId]) {
+      return { url: company.links[procedureId], kind: 'direct' };
+    }
+    return { url: company.top, kind: 'list' };
+  }
+
+  // ---- 画面 --------------------------------------------------------------
+  function viewTop() {
+    return stepper(1) +
+      '<div class="card">' +
+        '<span class="pill">個人情報の入力は一切不要です</span>' +
+        '<h1>保険のお手続きナビ</h1>' +
+        '<p class="lead">ご希望のお手続きを選択してください。ご加入中の保険会社のお手続き方法をご案内します。</p>' +
+      '</div>' +
+      '<h2>手続きを選ぶ</h2>' + tiles();
+  }
+
+  function tiles() {
+    return '<div class="tiles">' + HOKEN.procedures.map(function (p) {
+      return '<button class="tile" type="button" data-proc="' + p.id + '">' +
+        '<span class="ic">' + p.icon + '</span>' +
+        '<span><span class="t">' + esc(p.label) + '</span><br>' +
+        '<span class="d">' + esc(p.desc) + '</span></span></button>';
+    }).join('') + '</div>';
+  }
+
+  function viewCompanies() {
+    var p = state.procedure;
+    var q = state.query.trim();
+    var hits = HOKEN.companies.filter(function (c) { return !q || c.name.indexOf(q) >= 0; });
+
+    var rows = hits.map(function (c) {
+      var l = linkFor(c, p.id);
+      var badge = l.kind === 'direct'
+        ? '<span class="badge direct">Webで手続き可能</span>'
+        : '<span class="badge list">お手続き一覧から</span>';
+      return '<li><button class="row" type="button" data-company="' + c.id + '">' +
+        '<span class="nm">' + esc(c.name) + '</span>' +
+        '<span>' + badge + ' <span class="arrow">›</span></span></button></li>';
+    }).join('');
+
+    return stepper(2) +
+      '<button class="back" type="button" data-back="top">← 手続きを選びなおす</button>' +
+      '<div class="card">' +
+        '<div class="result-head"><span class="ic">' + p.icon + '</span><h2 style="margin:0">' + esc(p.label) + '</h2></div>' +
+        '<p class="lead">' + esc(p.desc) + '</p>' +
+      '</div>' +
+      '<h2>ご加入中の保険会社を選ぶ</h2>' +
+      '<input class="search" id="q" type="search" placeholder="会社名で絞り込む（例: オリックス）" value="' + esc(state.query) + '">' +
+      (rows ? '<ul class="list">' + rows + '</ul>'
+            : '<p class="empty">該当する保険会社が見つかりませんでした。会社名を短く入れてお試しください。</p>');
+  }
+
+  // 番号は用途が限られることがあるので、何の窓口かを必ず添える
+  function telLink(tel, note) {
+    return '<a class="sub-link" href="tel:' + esc(tel.replace(/-/g, '')) + '">' +
+      '<span>' + esc(tel) + '<br><span class="sub-note">' + esc(note) + '</span></span>' +
+      '<span>›</span></a>';
+  }
+
+  function viewResult() {
+    var p = state.procedure, c = state.company;
+    var l = linkFor(c, p.id);
+    var head = l.kind === 'direct'
+      ? '<span class="badge direct">このお手続きの案内ページがあります</span>'
+      : '<span class="badge list">会社のお手続き一覧からお選びください</span>';
+
+    var subs = '';
+    if (c.portal && c.portal.url) {
+      subs += '<a class="sub-link" href="' + esc(c.portal.url) + '" target="_blank" rel="noopener">' +
+        '<span>' + esc(c.portal.name) + '（契約者向けサービス）</span><span>›</span></a>';
+    }
+    if (l.url !== c.top) {
+      subs += '<a class="sub-link" href="' + esc(c.top) + '" target="_blank" rel="noopener">' +
+        '<span>お手続き一覧をすべて見る</span><span>›</span></a>';
+    }
+    // その手続き専用のダイヤルがある会社は、代表番号より先に出す
+    var dedicated = c.extraTels && c.extraTels[p.id];
+    if (dedicated) subs += telLink(dedicated.tel, dedicated.note);
+    if (c.tel) subs += telLink(c.tel, c.telNote || '電話窓口');
+
+    return stepper(3) +
+      '<button class="back" type="button" data-back="companies">← 保険会社を選びなおす</button>' +
+      '<div class="card">' +
+        '<div class="result-head"><span class="ic">' + p.icon + '</span>' +
+        '<div><h2 style="margin:0">' + esc(c.name) + '</h2>' +
+        '<p class="lead" style="margin:0">' + esc(p.label) + '</p></div></div>' +
+        '<p style="margin:12px 0 0">' + head + '</p>' +
+        '<a class="cta" href="' + esc(l.url) + '" target="_blank" rel="noopener">公式サイトでお手続きへ</a>' +
+        '<div class="sub-links">' + subs + '</div>' +
+        '<p class="note">お手続きの可否や必要書類はご契約内容によって異なります。' +
+        'リンク先が変わっている場合は、各社の公式サイトのトップから「ご契約者さま」をお探しください。</p>' +
+      '</div>';
+  }
+
+  function viewContact() {
+    return '<div class="card">' +
+      '<h1>お問い合わせ</h1>' +
+      '<p class="lead">このページはデモです。お手続きの内容によっては、担当者が一緒に確認したほうが早い場合があります。</p>' +
+      '<p class="note">LINEのトーク画面に戻って、そのままメッセージを送ってください。</p>' +
+      '</div>';
+  }
+
+  // ---- 描画とイベント ----------------------------------------------------
+  function render() {
+    var html;
+    if (state.view === 'companies' && state.procedure) html = viewCompanies();
+    else if (state.view === 'result' && state.company) html = viewResult();
+    else if (state.view === 'contact') html = viewContact();
+    else { state.view = 'top'; html = viewTop(); }
+
+    app.innerHTML = html;
+    writeUrl();
+
+    document.querySelectorAll('.nav button').forEach(function (b) {
+      var isCurrent = (b.dataset.nav === 'top' && state.view === 'top') ||
+        (b.dataset.nav === 'procedures' && (state.view === 'companies' || state.view === 'result')) ||
+        (b.dataset.nav === 'contact' && state.view === 'contact');
+      b.setAttribute('aria-current', isCurrent ? 'true' : 'false');
+    });
+
+    var q = document.getElementById('q');
+    if (q) {
+      q.addEventListener('input', function () {
+        state.query = q.value;
+        var pos = q.selectionStart;
+        render();
+        var q2 = document.getElementById('q');
+        if (q2) { q2.focus(); q2.setSelectionRange(pos, pos); }
+      });
+    }
+  }
+
+  app.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-proc], [data-company], [data-back]');
+    if (!t) return;
+    if (t.dataset.proc) {
+      state.procedure = byId(HOKEN.procedures, t.dataset.proc);
+      state.company = null; state.query = ''; state.view = 'companies';
+    } else if (t.dataset.company) {
+      state.company = byId(HOKEN.companies, t.dataset.company);
+      state.view = 'result';
+    } else if (t.dataset.back) {
+      state.view = t.dataset.back;
+      if (t.dataset.back === 'top') { state.procedure = null; state.company = null; }
+    }
+    window.scrollTo(0, 0);
+    render();
+  });
+
+  document.querySelector('.nav').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-nav]');
+    if (!b) return;
+    if (b.dataset.nav === 'contact') state.view = 'contact';
+    else if (b.dataset.nav === 'procedures') { state.view = 'top'; state.procedure = null; state.company = null; }
+    else { state.view = 'top'; state.procedure = null; state.company = null; }
+    window.scrollTo(0, 0);
+    render();
+  });
+
+  document.getElementById('updated').textContent = HOKEN.updatedAt;
+  readUrl();
+  render();
+})();
+</script>
+</body>
+</html>
