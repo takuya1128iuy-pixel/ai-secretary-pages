@@ -8,6 +8,9 @@
 <meta property="og:title" content="てつづきコンパス">
 <meta property="og:description" content="保険会社ごとのお手続き方法と窓口をまとめてご案内します。">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://takuya1128iuy-pixel.github.io/ai-secretary-pages/tetsuzuki-compass/logo-og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAkFBMVEUAAAAkRmodo6xjaG8LeZX29vQ3UW5IXHMhJHIYYmUaO2NooaWjpaZicJA6UWpFXHZRoq4A//9Xn62V0dBtycglbrYtwcFTxMMnt7duqbXl6OcAAP9hc4lCXXpu//+v5OOUpLK5ytDb0rOgucQdv8EvwL9UbIh7xsmTZnWGtbwAfwAA/wBYboZ/f/9Vqv9JwL8YChAgAAAAMHRSTlMA9vwQ/QqjWwMH+w0PIWqV4QGlW5sD/+EDav8BVd0CJ/z/CP///5JcEUUCAf8CA/I3GkAcAAADO0lEQVR42n1Wh7LjMAhEVpAsd8e+OD2vl6v//3cHSHLJSx4zmbQFdimSAQBSOGrQ9EFb/wZWKWVKaOG2aauM1tqllSJncITPskwpH+WrteSgLP9XKeQfntTp4eHxQRlM76QAgmtdkp85avqo1G/Cc4p7nEA7Ci9mWEGmHr/jFN2ODM8RSqWy52dyLu5jSTIFs4q/ODQEbk7KphoDAM/bKxdi4srKtJ5DTWVSdfzvC5gUaPWWu1ZLFyqjghmbQy5o7Pr13IEhJ8lfjmhvln67vK+T16SBn6PDAQplsXDeM1NThg8KPSSbhGwNP6YUKdRaqAegZDQVXPphI+hklezmDuCIfmFYKvWu4HqpkuJ0w0uSBIfLdVMKCX4qJWOu1FOaasA+iYaLWTzwPLBGhLQ80FfLaiEH6Dj86koChaRmySws8mqPJ4drCaVsAOHTqfdEMjBacQrQ+TxSyfiSVmFmOeDg8Q29cJ7boe/RfPxxC5fB898hS6jmhEoSYBb4c6BPDg3CLtlpIhBzODDqaviJTr/xfIhMjs27VdUUkRWYuYAt0ff4VfLJ5UGOWYxzYa8UbKEbAh9ff5r9BQfP6DDx6cI8kAP+oCHWrV7EVIt13EK/GfHSbWiRB6f2Di2gSBhnCjrCD9f95aBxjKRrNqQ4/8J/SfK437OABkJ7Szs5kGq/BbXUKYf+JRn2+33DAsRBQ1jDcTLiNpLDBbpXoi8OROiv71M4sxBQNMgmHNEfB9iI4OeGKzq2pjjyMI9jM4kOFVqx4GaatzSITsM3pojad2DEr+fz2RYSNPahlsZRfQMhwc93SQ7osXF+NHi0ztAHeNMtdo9JZLPR+JASuDwssNBZbDBdGYyYps34qgoh6W9smA6YyGHa0IyrLIQkPM7hbVr4DZ5WVFJUlMCrdRAVFNYRXhTUi+OEQ2QNx/8E+APeB/lkNnJJ8jin7dxDfhM6obt5beLxbf27Xt5yNR/bRKdEoROmh5Ri9fVICUcfNxOnVgrch4+7Mz+G+PCWUDnT8ZfEm4tX682rF+Vmu2X17QeCmD5aNl1bd54IXKS1MFPA3ScIF+7HWYIqh+8eB7hGTzZ0QJmaL1a3hPwHwioiF73xm7IAAAAASUVORK5CYII=">
 <style>
 :root {
   color-scheme: light dark;
@@ -29,6 +32,14 @@
   --ok-fg: #1a7f45;
   --warn-bg: #fdf3e2;
   --warn-fg: #9a6413;
+  /* ロゴマーク。暗い地では紺を持ち上げた版に差し替える。
+     1枚のHTMLにまとめて配るので、外部ファイルにせず画像も埋め込む（各2.5KB程度）。 */
+  /* ロゴマーク。暗い地では紺を持ち上げた版に差し替える。
+     1枚のHTMLにまとめて配るので、外部ファイルにせず画像も埋め込む。
+     同じ画像を2度書かないよう、実体はここに置いて --brand-mark で選ぶ。 */
+  --mark-on-light: url("data:image/png;base64,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");
+  --mark-on-dark: url("data:image/png;base64,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");
+  --brand-mark: var(--mark-on-light);
   --radius: 14px;
   --shadow: 0 1px 2px rgba(20, 49, 92, .06), 0 8px 24px rgba(20, 49, 92, .06);
 }
@@ -54,11 +65,13 @@
     --ok-fg: #62c78d;
     --warn-bg: #3a2c1250;
     --warn-fg: #e0b264;
+    --brand-mark: var(--mark-on-dark);
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
   }
 }
 
 :root[data-theme="dark"] {
+  --brand-mark: var(--mark-on-dark);
   --brand: #b9c2ff;
   --brand-soft: #9aa6f5;
   --accent: #8f9dff;
@@ -102,8 +115,8 @@ body {
   border-bottom: 1px solid var(--line);
 }
 .site-header .wrap { padding-top: 12px; padding-bottom: 0; }
-.brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; color: var(--brand); }
-.brand svg { width: 24px; height: 24px; flex: none; }
+.brand { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 17px; color: var(--brand); }
+.brand-mark { width: 28px; height: 28px; flex: none; background: var(--brand-mark) center / contain no-repeat; }
 .nav { display: flex; gap: 20px; margin-top: 10px; }
 .nav button {
   appearance: none; background: none; border: 0; padding: 8px 0 10px;
@@ -415,9 +428,7 @@ p.lead { color: var(--muted); margin: 0 0 4px; font-size: 14px; }
 <header class="site-header">
   <div class="wrap">
     <div class="brand">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>
-      </svg>
+      <span class="brand-mark" aria-hidden="true"></span>
       <span class="brand-name">てつづきコンパス</span>
       <span class="brand-sub"></span>
     </div>
