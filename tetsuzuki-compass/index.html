@@ -530,56 +530,32 @@ var HOKEN = {
   // 電話番号と受付時間を最後に各社のページを開いて突き合わせた日（32件全件）。
   telCheckedAt: '2026-09-06',
 
-  // needs / duration / pitfalls は「リンク先に行く前に知りたいこと」。
+  // needs / duration は「リンク先に行く前に知りたいこと」。
   // 会社ごとに違うので、あくまで一般的な目安として出している。
   procedures: [
     { id: 'address', icon: '🏠', label: '住所・氏名の変更', desc: '引っ越し・結婚などで登録内容が変わったとき',
       needs: ['証券番号（保険証券やご契約内容のお知らせに記載）', '新しい住所'],
       duration: 'Webなら5〜10分。反映まで数営業日',
-      pitfalls: [
-        '複数社に加入している場合は、会社ごとに手続きが必要です',
-        '契約者と被保険者の両方の住所が変わるときは、別の手続きになることがあります',
-      ],
     },
     { id: 'payment', icon: '💳', label: 'クレジットカード・口座変更', desc: '保険料の引き落とし先を変えるとき',
       needs: ['証券番号', '新しい口座番号またはクレジットカード', 'キャッシュカードや通帳（口座振替の場合）'],
       duration: 'Web完結なら10分ほど。切替は翌月または翌々月の引き落としから',
-      pitfalls: [
-        '切替が間に合わないと、旧口座から1回引き落とされることがあります',
-        '口座やカードの名義が契約者と違うと、受け付けられない場合があります',
-      ],
     },
     { id: 'certificate', icon: '📄', label: '控除証明書の再発行', desc: '年末調整・確定申告で使う証明書をなくしたとき',
       needs: ['証券番号', '登録している住所'],
       duration: '再発行の到着まで1週間ほど',
-      pitfalls: [
-        '登録住所が古いままだと届きません。先に住所変更を',
-        '10月〜11月は各社の窓口が混み合います。早めの手続きが安全です',
-      ],
     },
     { id: 'beneficiary', icon: '👪', label: '受取人・契約者の変更', desc: '受取人や契約者を変えるとき',
       needs: ['証券番号', '新しい受取人の氏名・生年月日・続柄'],
       duration: '書類のやり取りが必要で、2週間ほどかかることが多い',
-      pitfalls: [
-        '受取人になれる範囲が決まっている会社があります（配偶者・二親等以内など）',
-        '被保険者の同意が必要な場合があります',
-      ],
     },
     { id: 'claim', icon: '🏥', label: '給付金・保険金の請求', desc: '入院・手術・万一のとき',
       needs: ['証券番号', '入院・手術の期間と病名', '診断書や領収書（会社により異なります）'],
       duration: '書類が揃ってから5営業日前後で支払われることが多い',
-      pitfalls: [
-        '診断書は自己負担になることがあります。まず必要書類を会社に確認してください',
-        '請求には時効があります（一般に3年）。古い入院でも一度ご相談を',
-      ],
     },
     { id: 'loan', icon: '🏦', label: '契約者貸付・解約', desc: '一時的にお金が必要なとき／やめるとき',
       needs: ['証券番号', '本人確認書類'],
       duration: '契約者貸付はWebなら即日〜数営業日',
-      pitfalls: [
-        '解約は元に戻せません。減額や払済など、続けたまま負担を減らす方法もあります',
-        '貸付には利息がつきます。返済しないと保険が失効することがあります',
-      ],
     },
   ],
 
@@ -870,6 +846,65 @@ var HOKEN = {
       },
     },
     {
+      id: 'tdf-life', name: 'T&Dフィナンシャル生命',
+      // 金融機関・来店型保険ショップ経由（0120-302-572）と、旧営業支社経由
+      // （0120-301-396）で窓口が分かれている。代理店経由のほうを採る。
+      tel: '0120-302-572', telNote: 'お客さまサービスセンター（金融機関・保険ショップ経由のご契約）平日9:00〜17:00',
+      telSource: 'https://www.tdf-life.co.jp/inquiry.html',
+      extraTels: { claim: { tel: '0120-301-267', note: '保険金・給付金フリーダイヤル 平日9:00〜17:00' } },
+      top: 'https://www.tdf-life.co.jp/service/tetsuzuki/',
+      links: {
+        address: 'https://www.tdf-life.co.jp/service/tetsuzuki/tetsuzuki_1.html',
+        payment: 'https://www.tdf-life.co.jp/service/tetsuzuki/tetsuzuki_11.html',
+        certificate: 'https://www.tdf-life.co.jp/service/tetsuzuki/tetsuzuki_10.html',
+        beneficiary: 'https://www.tdf-life.co.jp/service/tetsuzuki/tetsuzuki_2.html',
+        claim: 'https://www.tdf-life.co.jp/service/tetsuzuki/tetsuzuki_13.html',
+      },
+    },
+    {
+      id: 'axa-direct', name: 'アクサダイレクト生命',
+      tel: '0120-953-831', telNote: 'カスタマーサービスセンター 平日9:00〜17:30',
+      // 出典は契約者ページ。お問い合わせページはアクサ生命の番号と続けて
+      // 書かれていて数字がつながって読めるので、出典には使わない。
+      telSource: 'https://www.axa-direct-life.co.jp/customer/index.html',
+      top: 'https://www.axa-direct-life.co.jp/guide/index.html',
+      links: {
+        address: 'https://www.axa-direct-life.co.jp/res/lifeweb/modal/guide-01.html',
+        payment: 'https://www.axa-direct-life.co.jp/res/lifeweb/modal/guide-11.html',
+        certificate: 'https://www.axa-direct-life.co.jp/res/lifeweb/modal/guide-13.html',
+        beneficiary: 'https://www.axa-direct-life.co.jp/res/lifeweb/modal/guide-10.html',
+        claim: 'https://www.axa-direct-life.co.jp/about/insurance/01/index.html',
+        loan: 'https://www.axa-direct-life.co.jp/res/lifeweb/modal/guide-12.html',
+      },
+    },
+    {
+      id: 'medicare', name: 'メディケア生命',
+      tel: '0120-315-056', telNote: 'コールセンター 平日9:00〜18:00／土日9:00〜17:00',
+      telSource: 'https://www.medicarelife.com/contact/',
+      // シニア向けフリーダイヤル 0120-001-103、ネット申込み用 0120-157-056 は別。
+      // 販売チャネルによる窓口の分かれはなかった（2026-09-06 確認）。
+      portal: { name: 'マイページ', url: 'https://www.medicarelife.com/vivr/mypage_guide/' },
+      top: 'https://www.medicarelife.com/vivr/',
+      links: {
+        address: 'https://www.medicarelife.com/vivr/procedures/address/',
+        beneficiary: 'https://www.medicarelife.com/vivr/procedures/name/',
+        certificate: 'https://www.medicarelife.com/contractor/notice/',
+        claim: 'https://www.medicarelife.com/contractor/benefit/',
+      },
+    },
+    {
+      id: 'hanasaku', name: 'はなさく生命',
+      tel: '0120-8739-17', telNote: 'お客様コンタクトセンター 月〜土9:00〜18:00',
+      telSource: 'https://www.life8739.co.jp/contact',
+      // 「保険ショップ等での取扱商品に関するお問合せも同センターで承る」と
+      // 明記されており、代理店経由でも窓口は同じ（2026-09-06 確認）。
+      top: 'https://www.life8739.co.jp/customer',
+      links: {
+        certificate: 'https://www.life8739.co.jp/info/deduction_schedule',
+        claim: 'https://www.life8739.co.jp/info/payment',
+      },
+    },
+    {
       id: 'zurichlife', name: 'チューリッヒ生命',
       tel: '0120-236-523', telNote: 'カスタマーケアセンター 月〜土9:00〜18:00',
       telSource: 'https://www.zurichlife.co.jp/inquiry/contractor',
@@ -1131,13 +1166,12 @@ if (typeof module !== 'undefined') module.exports = HOKEN;
   // リンク先に進む前に知っておきたいこと。会社ごとの差はあるので目安として出す。
   // 見出しはお客さまが読む言葉づかいに合わせる。
   function infoBlock(p, opts) {
-    if (!p.needs && !p.duration && !p.pitfalls) return '';
+    if (!p.needs && !p.duration) return '';
     var o = opts || {};
     var html = '<div class="info' + (o.divider ? ' info--divided' : '') + '">';
     html += '<h2 class="info-title">お手続きの前に</h2>';
     if (p.needs) html += '<div><h3>ご用意いただくもの</h3>' + list(p.needs) + '</div>';
     if (p.duration) html += '<div><h3>所要時間の目安</h3><p>' + esc(p.duration) + '</p></div>';
-    if (p.pitfalls) html += '<div><h3>ご注意いただきたいこと</h3>' + list(p.pitfalls) + '</div>';
     return html + '</div>';
   }
 
