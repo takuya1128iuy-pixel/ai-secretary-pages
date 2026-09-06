@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>てつづきコンパス</title>
-<meta name="description" content="ご加入中の保険会社のお手続きページを、手続きの種類から探せます。">
+<meta name="description" content="生命保険36社のお手続きページと窓口を、手続きの種類から探せます。">
 <meta property="og:title" content="てつづきコンパス">
-<meta property="og:description" content="保険会社ごとのお手続き方法と窓口をまとめてご案内します。">
+<meta property="og:description" content="生命保険36社のお手続き方法と窓口を、手続きの種類からご案内します。">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://takuya1128iuy-pixel.github.io/ai-secretary-pages/tetsuzuki-compass/logo-og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -116,6 +116,7 @@ body {
 }
 .site-header .wrap { padding-top: 12px; padding-bottom: 0; }
 .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 17px; color: var(--brand); }
+.count-note { margin: -4px 0 10px; color: var(--muted); font-size: 13px; }
 .brand-mark { width: 28px; height: 28px; flex: none; background: var(--brand-mark) center / contain no-repeat; }
 .nav { display: flex; gap: 20px; margin-top: 10px; }
 .nav button {
@@ -1267,6 +1268,8 @@ if (typeof module !== 'undefined') module.exports = HOKEN;
         infoBlock(p, { divider: true }) +
       '</div>' +
       '<h2>ご加入中の保険会社を選ぶ</h2>' +
+      // 社数は数えて出す。手で書くと会社を足したときに古くなる
+      '<p class="count-note">' + HOKEN.companies.length + '社を収録しています</p>' +
       '<input class="search" id="q" type="search" placeholder="会社名で絞り込む（例: オリックス）" value="' + esc(state.query) + '">' +
       (rows ? '<ul class="list">' + rows + '</ul>'
             : '<p class="empty">該当する保険会社が見つかりませんでした。会社名を短く入れてお試しください。</p>');
