@@ -745,7 +745,10 @@ var HOKEN = {
     },
     {
       id: 'daido', name: '大同生命',
-      tel: '0120-789-501', telNote: 'コールセンター 平日9:00〜17:00（住所変更・控除証明書は24時間自動音声）',
+      // 「住所変更・控除証明書は24時間自動音声」と書いていたが、出典ページに
+      // その記載は無い（2026-09-06 本文を全部見て確認）。ページにあるのは
+      // 「オペレータによる受付時間 9:00〜17:00」だけなので、それだけ書く。
+      tel: '0120-789-501', telNote: '大同生命コールセンター 平日9:00〜17:00',
       telSource: 'https://www.daido-life.co.jp/c_keiyaku/',
       portal: { name: 'お客さまページ', url: 'https://www.daido-life.co.jp/c_keiyaku/' },
       top: 'https://www.daido-life.co.jp/c_keiyaku/procedure/',
@@ -846,6 +849,17 @@ var HOKEN = {
       },
     },
     {
+      id: 'fukoku-shinrai', name: 'フコクしんらい生命',
+      tel: '0120-700-651', telNote: 'お客さま相談窓口 平日9:00〜18:00',
+      telSource: 'https://www.fukokushinrai.co.jp/contact/',
+      // 販売チャネルによる窓口の分かれはなかった（2026-09-06 確認）。
+      top: 'https://www.fukokushinrai.co.jp/contractor/',
+      links: {
+        address: 'https://form.fukokushinrai.co.jp/m/change_name',
+        claim: 'https://www.fukokushinrai.co.jp/contractor/claim/benefit/',
+      },
+    },
+    {
       id: 'tdf-life', name: 'T&Dフィナンシャル生命',
       // 金融機関・来店型保険ショップ経由（0120-302-572）と、旧営業支社経由
       // （0120-301-396）で窓口が分かれている。代理店経由のほうを採る。
@@ -903,6 +917,90 @@ var HOKEN = {
         certificate: 'https://www.life8739.co.jp/info/deduction_schedule',
         claim: 'https://www.life8739.co.jp/info/payment',
       },
+    },
+    {
+      id: 'ca-life', name: 'クレディ・アグリコル生命',
+      tel: '0120-60-1221', telNote: 'カスタマーサービスセンター 平日9:00〜17:00',
+      telSource: 'https://www.ca-life.jp/contact.html',
+      // 銀行窓販が主体だが、窓口はこの1本のみ（2026-09-06 確認）。
+      top: 'https://www.ca-life.jp/customer/',
+      links: {
+        address: 'https://www.ca-life.jp/customer/procedures01.html',
+        payment: 'https://www.ca-life.jp/customer/procedures24.html',
+        certificate: 'https://www.ca-life.jp/customer/procedures15.html',
+        beneficiary: 'https://www.ca-life.jp/customer/procedures02.html',
+        loan: 'https://www.ca-life.jp/customer/procedures11.html',
+      },
+    },
+    {
+      id: 'cardif', name: 'カーディフ生命',
+      tel: '0120-820-275', telNote: 'カスタマーサービスセンター 平日9:00〜18:00',
+      telSource: 'https://life.cardif.co.jp/contact/',
+      // ライフサイクルプランご契約者さま専用 0120-901-170（月〜土9:00〜18:00）は別建て。
+      top: 'https://life.cardif.co.jp/contact/',
+      links: {
+        claim: 'https://life.cardif.co.jp/contact/customer/claim/',
+      },
+    },
+    {
+      id: 'sbi-life', name: 'SBI生命',
+      tel: '0120-272-811', telNote: 'お客様コンタクトセンター 平日9:00〜17:00',
+      // 出典は契約者ページ。お問い合わせページ（/other/inquiry.html）にも同じ記載が
+      // あるが、窓口が5つ並んでいて隣の団体信用生命保険サポートデスクの
+      // 「月曜～金曜 9:00～18:00」を拾ってしまうので、出典には使わない。
+      telSource: 'https://www.sbilife.co.jp/customer/',
+      // 0120-272-060 は新規申込のサポートデスク、0120-272-350 は団体信用生命保険、
+      // 0120-272-860 はご高齢のお客さま専用。契約後の手続きはこの1本で、
+      // 販売チャネルによる分かれはなかった（2026-09-06 確認）。
+      top: 'https://www.sbilife.co.jp/customer/tetsuzuki/',
+      links: {
+        address: 'https://www.sbilife.co.jp/customer/tetsuzuki/address.html',
+        payment: 'https://www.sbilife.co.jp/customer/tetsuzuki/account.html',
+        certificate: 'https://www.sbilife.co.jp/customer/tetsuzuki/p_reissue.html',
+        beneficiary: 'https://www.sbilife.co.jp/customer/tetsuzuki/receiptor.html',
+        claim: 'https://www.sbilife.co.jp/customer/tetsuzuki/hedge.html',
+        loan: 'https://www.sbilife.co.jp/customer/tetsuzuki/cancellation.html',
+      },
+    },
+    {
+      id: 'pgf-life', name: 'PGF生命',
+      // 販売代理店経由（0120-56-2269）と旧大和生命経由（0120-28-2269、平日9:00〜17:30）で
+      // 窓口が分かれている。代理店経由のほうを採る。住友生命・ジブラルタ生命・
+      // T&Dフィナンシャル生命に続いて4社目。
+      tel: '0120-56-2269', telNote: '販売代理店経由のご契約 専用ダイヤル 平日9:00〜18:00／土9:00〜17:00',
+      telSource: 'https://www.pgf-life.co.jp/procedure/bank/list/',
+      extraTels: { claim: { tel: '0120-56-4861', note: '保険金請求専用ダイヤル 平日9:00〜18:00／土9:00〜17:00' } },
+      top: 'https://www.pgf-life.co.jp/procedure/bank/list/',
+    },
+    {
+      id: 'ms-primary', name: '三井住友海上プライマリー生命',
+      // 商品で窓口が分かれている。一時払商品 0120-81-8107、平準払商品 0120-520-256。
+      // 銀行窓販の主力である一時払のほうを採る。会社の代表は 0120-125-104。
+      // 受付時間はCIでは要目視になる。ページが「一時払 0120-81-8107 /
+      // 平準払 0120-520-256 / 9:00〜17:00 月曜日〜金曜日」と、2本の番号に
+      // 1つの受付時間をまとめて書いているため、機械には持ち主を決められない。
+      // 2026-09-06 に目で確認済み。
+      tel: '0120-81-8107', telNote: 'お客さまサービスセンター（一時払商品）平日9:00〜17:00',
+      telSource: 'https://www.ms-primary.com/customer/',
+      top: 'https://www.ms-primary.com/customer/guidebook/',
+      links: {
+        certificate: 'https://www.ms-primary.com/customer/certificate/',
+      },
+    },
+    {
+      id: 'd-frontier', name: '第一フロンティア生命',
+      // 商品で窓口が分かれている。一時払商品 0120-876-126、平準払商品 0120-765-228。
+      // 銀行窓販の主力である一時払のほうを採る（三井住友海上プライマリー生命と同じ）。
+      // 受付時間は、お問い合わせページが0120番号のそばには書いておらず、
+      // 同じお客さまサービスセンターの海外用 042-716-6040 と、チャットの
+      // オペレーター受付時間として2か所に「平日9:00〜17:00」と書いてある。
+      tel: '0120-876-126', telNote: 'お客さまサービスセンター（一時払商品）平日9:00〜17:00',
+      telSource: 'https://www.d-frontier-life.co.jp/contact/index.html',
+      extraTels: {
+        loan: { tel: '0120-654-823', note: '解約試算・請求書専用 自動応答ダイヤル 平日8:00〜20:00' },
+      },
+      portal: { name: 'マイページ', url: 'https://www.d-frontier-life.co.jp/customer/internet-service/index.html' },
+      top: 'https://www.d-frontier-life.co.jp/customer/information/index.html',
     },
     {
       id: 'zurichlife', name: 'チューリッヒ生命',
