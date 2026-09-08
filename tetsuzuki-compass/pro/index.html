@@ -1184,8 +1184,17 @@ if (typeof module !== 'undefined') module.exports = HOKEN;
     if (dedicated || c.tel) {
       lines.push('');
       lines.push('▼お電話の場合');
-      if (dedicated) lines.push(dedicated.tel + '（' + dedicated.note + '）');
-      if (c.tel) lines.push(c.tel + '（' + (c.telNote || '電話窓口') + '）');
+      // 番号は必ず単独の行に置く。うしろに「（カスタマーセンター…）」を続けると
+      // LINEが電話番号と認識せず、お客様がタップして発信できない。
+      // 窓口名と受付時間は次の行にまわし、窓口が2つあるときは空行で区切る。
+      var tels = [];
+      if (dedicated) tels.push({ tel: dedicated.tel, note: dedicated.note });
+      if (c.tel) tels.push({ tel: c.tel, note: c.telNote || '電話窓口' });
+      tels.forEach(function (t, i) {
+        if (i) lines.push('');
+        lines.push(t.tel);
+        lines.push(t.note);
+      });
     }
 
     if (p.duration) {
