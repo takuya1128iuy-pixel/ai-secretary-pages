@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>てつづきコンパス</title>
-<meta name="description" content="生命保険36社のお手続きページと窓口を、手続きの種類から探せます。">
+<meta name="description" content="生命保険37社のお手続きページと窓口を、手続きの種類から探せます。">
 <meta property="og:title" content="てつづきコンパス">
-<meta property="og:description" content="生命保険36社のお手続き方法と窓口を、手続きの種類からご案内します。">
+<meta property="og:description" content="生命保険37社のお手続き方法と窓口を、手続きの種類からご案内します。">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://takuya1128iuy-pixel.github.io/ai-secretary-pages/tetsuzuki-compass/logo-og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -571,6 +571,108 @@ var HOKEN = {
     },
   ],
 
+  // 募集人向けの「声かけ」文面。手続きの案内と違って保険会社を選ばないので、別立てにする。
+  //
+  // 商品の説明も、勧誘の言葉も入れない。近況を伺うところで止める。
+  // 保険の内容に踏み込むと、所属先で募集文書の審査が要る文面になってしまうため。
+  // 誕生日にいたっては保険の話を混ぜない。祝うだけにする。
+  //
+  // {name} などは差し込み。fields の suffix は、空欄のときに助詞ごと消すためのもの
+  // （会社名が空なら「アクサ生命の」ではなく、そのまま「ご契約から」と続く）。
+  // fallback は空欄のまま出すときの見た目。募集人が手で直す前提の伏せ字。
+  outreach: [
+    {
+      id: 'anniversary', icon: '🎉', label: 'ご契約の応当日',
+      desc: '1年、2年の節目にひとこと',
+      fields: [
+        { key: 'years', label: '経過年数', placeholder: '1', fallback: '◯' },
+        { key: 'company', label: '保険会社（任意）', placeholder: 'アクサ生命', suffix: 'の' },
+      ],
+      lines: [
+        '{name}様',
+        '',
+        'いつもお世話になっております。',
+        '',
+        '{company}ご契約から、{years}年が経ちました。ご継続いただき、ありがとうございます。',
+        '',
+        'この1年で、ご家族やお住まいなど、お変わりはございませんでしたか。',
+        'ご住所やお勤め先が変わっている場合は、お手続きが必要なことがあります。',
+        '',
+        'お手すきのときにご返信いただけますと幸いです。',
+      ],
+    },
+    {
+      id: 'birthday', icon: '🎂', label: 'お誕生日',
+      desc: '祝うだけ。保険の話は入れない',
+      fields: [],
+      lines: [
+        '{name}様',
+        '',
+        'お誕生日おめでとうございます。',
+        '',
+        '日頃よりお付き合いいただき、ありがとうございます。',
+        '{name}様とご家族にとって、良い一年になりますようお祈りしております。',
+        '',
+        '何かお困りのことがありましたら、いつでもご連絡ください。',
+      ],
+    },
+    {
+      id: 'renewal', icon: '🚗', label: '損保の満期・更新',
+      desc: '自動車・火災の満期が近いとき',
+      fields: [
+        { key: 'kind', label: '種類', placeholder: '自動車', fallback: '◯◯' },
+        { key: 'month', label: '満期の月', placeholder: '11', fallback: '◯' },
+        { key: 'company', label: '保険会社（任意）', placeholder: '東京海上日動', suffix: 'の' },
+      ],
+      lines: [
+        '{name}様',
+        '',
+        'いつもお世話になっております。',
+        '',
+        '{company}{kind}保険が、{month}月に満期を迎えます。',
+        '',
+        '更新にあたって、ご使用の状況やお住まいに変わりがないか、確認させていただけますでしょうか。',
+        'ご都合のよいときに、10分ほどお時間をいただければと思います。',
+        '',
+        'ご返信お待ちしております。',
+      ],
+    },
+    {
+      id: 'school', icon: '🎓', label: 'ご進学・ご入学',
+      desc: 'お子様の節目に',
+      fields: [
+        { key: 'who', label: 'お子様のお名前（任意）', placeholder: '太郎', suffix: '' },
+      ],
+      lines: [
+        '{name}様',
+        '',
+        'このたびは{who}ご進学、おめでとうございます。',
+        '',
+        '新しい生活が始まりますね。ご家庭の支出が変わる時期でもありますので、',
+        '気になることがありましたら、いつでもお声がけください。',
+        '',
+        'ひとまずはお祝いまで。',
+      ],
+    },
+    {
+      id: 'promise', icon: '📅', label: 'お約束のフォロー',
+      desc: '「またその頃に」と言っていた件',
+      fields: [
+        { key: 'when', label: 'お約束の時期', placeholder: '今年の春', fallback: '先日' },
+      ],
+      lines: [
+        '{name}様',
+        '',
+        'いつもお世話になっております。',
+        '',
+        '以前お話しした際に、{when}ごろ改めてご相談しましょうとお話ししておりました。',
+        '',
+        'その後、ご状況にお変わりはございませんか。',
+        'よろしければ、近いうちにお時間をいただけますと幸いです。',
+      ],
+    },
+  ],
+
   companies: [
     {
       id: 'nissay', name: '日本生命',
@@ -1024,6 +1126,19 @@ var HOKEN = {
         address: 'https://www.zurichlife.co.jp/customer/z-life/guide/address',
       },
     },
+    {
+      id: 'nanairo', name: 'なないろ生命',
+      tel: '0120-08-7716',
+      telNote: 'お客様サービスセンター 月〜金9:00〜18:00／土9:00〜12:00・13:00〜17:00（祝日・年末年始を除く）',
+      telSource: 'https://www.nanairolife.co.jp/customer/contact/',
+      portal: { name: 'マイページ', url: 'https://na-agent.nanairolife.co.jp/kyf/web.do' },
+      top: 'https://www.nanairolife.co.jp/customer/',
+      links: {
+        address: 'https://www.nanairolife.co.jp/customer/change/',
+        certificate: 'https://www.nanairolife.co.jp/customer/issuance/',
+        claim: 'https://www.nanairolife.co.jp/customer/claim/',
+      },
+    },
   ],
 };
 
@@ -1064,7 +1179,9 @@ if (typeof module !== 'undefined') module.exports = HOKEN;
     return '<ul>' + items.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
   };
 
-  var state = { view: 'top', procedure: null, company: null, query: '' };
+  var state = { view: 'top', procedure: null, company: null, query: ''  };
+  // 声かけ文面の入力。手続きと違って会社を選ばないので、別に持つ
+  var outreachValues = {};
 
   // ---- 見た目とテナント --------------------------------------------------
   function applyTenant() {
@@ -1085,6 +1202,8 @@ if (typeof module !== 'undefined') module.exports = HOKEN;
 
   // ---- URL との同期 ------------------------------------------------------
   function readUrl() {
+    // リッチメニューの「声かけの文面」から来たとき
+    if (isPro && params.get('v') === 'outreach') { state.view = 'outreachList'; return; }
     var p = params.get('p');
     var c = params.get('c') && byId(HOKEN.companies, params.get('c')) ? params.get('c') : null;
     var m = location.hash.match(/^#\/p\/([\w-]+)(?:\/c\/([\w-]+))?/);
@@ -1207,6 +1326,71 @@ if (typeof module !== 'undefined') module.exports = HOKEN;
     return lines.join('\n');
   }
 
+  // 声かけの文面。差し込みが空のときは、助詞ごと消すか伏せ字にする。
+  // 手続きの案内と同じで、送るかどうかは本人が決める。ここは下書きを作るだけ。
+  function outreachMessage(o) {
+    var lines = o.lines.map(function (line) {
+      var text = line.replace(/\{name\}/g, customerName || '');
+      (o.fields || []).forEach(function (f) {
+        var v = (outreachValues[f.key] || '').trim();
+        var out = v ? v + (f.suffix || '') : (f.fallback || '');
+        text = text.split('{' + f.key + '}').join(out);
+      });
+      return text;
+    });
+    // 名前が空だと「様」だけの行が残るので落とす
+    return lines.filter(function (t, i) {
+      return !(i === 0 && t.trim() === '様');
+    }).join('\n').replace(/\n{3,}/g, '\n\n');
+  }
+
+  function outreachTiles() {
+    return '<div class="tiles">' + HOKEN.outreach.map(function (o) {
+      return '<button class="tile" type="button" data-outreach="' + o.id + '">' +
+        '<span class="ic">' + o.icon + '</span>' +
+        '<span><span class="t">' + esc(o.label) + '</span><br>' +
+        '<span class="d">' + esc(o.desc) + '</span></span></button>';
+    }).join('') + '</div>';
+  }
+
+  function viewOutreachList() {
+    return '<button class="back" type="button" data-back="top">← トップへ</button>' +
+      '<div class="card">' +
+        '<h1>声かけの文面をつくる</h1>' +
+        '<p class="lead">手続き以外の連絡です。会社を選ばずに文面が作れます。</p>' +
+      '</div>' +
+      outreachTiles();
+  }
+
+  function viewOutreach() {
+    var o = state.outreach;
+    var fields = (o.fields || []).map(function (f) {
+      return '<label class="pro-field"><span>' + esc(f.label) + '</span>' +
+        '<input class="search" type="text" data-field="' + f.key + '" ' +
+        'placeholder="例: ' + esc(f.placeholder) + '" value="' + esc(outreachValues[f.key] || '') + '"></label>';
+    }).join('');
+
+    return '<button class="back" type="button" data-back="top">← 用件を選びなおす</button>' +
+      '<div class="card">' +
+        '<div class="result-head"><span class="ic">' + o.icon + '</span>' +
+        '<h2 style="margin:0">' + esc(o.label) + '</h2></div>' +
+        '<p class="lead">' + esc(o.desc) + '</p>' +
+      '</div>' +
+      '<div class="card pro">' +
+        '<h2>お客様に送る文面</h2>' +
+        '<label class="pro-field"><span>お客様のお名前（任意）</span>' +
+        '<input class="search" id="who" type="text" placeholder="例: 山田" value="' + esc(customerName) + '"></label>' +
+        fields +
+        '<textarea class="draft" id="draft" rows="14">' + esc(outreachMessage(o)) + '</textarea>' +
+        '<div class="pro-actions">' +
+          '<button class="cta" type="button" id="copy">この文面をコピー</button>' +
+          '<button class="consult" type="button" id="share">LINEで送る</button>' +
+        '</div>' +
+        '<p class="note">送る前に文面を直せます。入力した内容はこの端末の中だけで扱われ、どこにも送信されません。' +
+        '所属先の規定により、送る文面に社内審査が必要な場合があります。</p>' +
+      '</div>';
+  }
+
   // 募集人向けの操作パネル。文面はその場で直してから送れるようにしておく。
   function proPanel(p, c) {
     return '<div class="card pro">' +
@@ -1242,7 +1426,11 @@ if (typeof module !== 'undefined') module.exports = HOKEN;
         '<p class="lead">' + lead + '</p>' +
         linkNote() +
       '</div>' +
-      '<h2>手続きを選ぶ</h2>' + tiles();
+      '<h2>手続きを選ぶ</h2>' + tiles() +
+      // 声かけは手続きの案内と別もの。募集人向けのときだけ出す
+      (isPro ? '<h2 style="margin-top:28px">声かけの文面をつくる</h2>' +
+        '<p class="count-note">手続き以外の連絡です。会社を選ばずに文面が作れます</p>' +
+        outreachTiles() : '');
   }
 
   function tiles() {
@@ -1349,7 +1537,9 @@ if (typeof module !== 'undefined') module.exports = HOKEN;
   // ---- 描画とイベント ----------------------------------------------------
   function render() {
     var html;
-    if (state.view === 'companies' && state.procedure) html = viewCompanies();
+    if (state.view === 'outreach' && state.outreach) html = viewOutreach();
+    else if (state.view === 'outreachList' && isPro) html = viewOutreachList();
+    else if (state.view === 'companies' && state.procedure) html = viewCompanies();
     else if (state.view === 'result' && state.company) html = viewResult();
     else if (state.view === 'contact' && !isPro) html = viewContact();
     else { state.view = 'top'; html = viewTop(); }
@@ -1388,10 +1578,24 @@ if (typeof module !== 'undefined') module.exports = HOKEN;
 
     draft.addEventListener('input', function () { draftEdited = true; });
 
+    var rebuild = function () {
+      if (draftEdited) return;
+      draft.value = state.view === 'outreach'
+        ? outreachMessage(state.outreach)
+        : draftMessage(state.procedure, state.company);
+    };
+
     var who = document.getElementById('who');
     who.addEventListener('input', function () {
       customerName = who.value.trim();
-      if (!draftEdited) draft.value = draftMessage(state.procedure, state.company);
+      rebuild();
+    });
+
+    document.querySelectorAll('[data-field]').forEach(function (input) {
+      input.addEventListener('input', function () {
+        outreachValues[input.dataset.field] = input.value;
+        rebuild();
+      });
     });
 
     document.getElementById('copy').addEventListener('click', function (e) {
@@ -1435,9 +1639,13 @@ if (typeof module !== 'undefined') module.exports = HOKEN;
       render();
       return;
     }
-    var t = e.target.closest('[data-proc], [data-company], [data-back]');
+    var t = e.target.closest('[data-proc], [data-company], [data-back], [data-outreach]');
     if (!t) return;
-    if (t.dataset.proc) {
+    if (t.dataset.outreach) {
+      state.outreach = byId(HOKEN.outreach, t.dataset.outreach);
+      outreachValues = {};
+      state.view = 'outreach';
+    } else if (t.dataset.proc) {
       state.procedure = byId(HOKEN.procedures, t.dataset.proc);
       state.company = null; state.query = ''; state.view = 'companies';
     } else if (t.dataset.company) {
@@ -1445,7 +1653,7 @@ if (typeof module !== 'undefined') module.exports = HOKEN;
       state.view = 'result';
     } else if (t.dataset.back) {
       state.view = t.dataset.back;
-      if (t.dataset.back === 'top') { state.procedure = null; state.company = null; }
+      if (t.dataset.back === 'top') { state.procedure = null; state.company = null; state.outreach = null; }
     }
     window.scrollTo(0, 0);
     render();
