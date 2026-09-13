@@ -1,5 +1,7 @@
 # AI_HANDOFF.md — 引き継ぎ資料（ai-secretary-pages）
 
+> これは2026年9月までの詳しい履歴です。通常作業の入口は `AGENTS.md`、現在の状態は `docs/status.md` を参照してください。
+
 Claude Code / Codex など、複数の AI エージェントでこのリポジトリを触るための資料。
 最終更新: **2026-09-08**
 
