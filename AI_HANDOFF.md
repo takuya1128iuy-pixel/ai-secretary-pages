@@ -50,7 +50,7 @@ https://takuya1128iuy-pixel.github.io/ai-secretary-pages/hoken-navi/          40
 
 ## プロダクト概要
 
-**ai-secretary-pages** — AI秘書（`~/claudecode-Secretary`）の **Google OAuth の公開ステータスを
+**ai-secretary-pages** — AI秘書本体（非公開リポジトリ）の **Google OAuth の公開ステータスを
 「テスト中」→「本番」に切り替えるため**に作った、ホームページとプライバシーポリシーの 2 枚。
 
 これがあることで「7 日ごとに Google の許可を取り直す」問題が解消した（2026-09-05）。
@@ -91,7 +91,7 @@ open index.html      # そのままブラウザで開くだけ
 |---|---|---|
 | **GitHub Pages（public）** | 稼働中 | `main` から自動。`takuya1128iuy-pixel/ai-secretary-pages` |
 | **Google Cloud（OAuth 同意画面）** | 連動 | `index.html` と `privacy.html` の URL を、同意画面のホームページ／プライバシーポリシーに登録済み。**本番公開済み** |
-| **AI秘書（`~/claudecode-Secretary`）** | 依存される側 | この 2 枚が消えると Google 連携の前提が崩れる |
+| **AI秘書本体（非公開）** | 依存される側 | この 2 枚が消えると Google 連携の前提が崩れる |
 | **てつづきコンパス** | もう同居していない | 2026-09-09 に写しを削除。本番は Cloudflare（`~/tetsuzuki-compass`） |
 
 ### Google OAuth まわりで残っている論点
@@ -106,7 +106,7 @@ open index.html      # そのままブラウザで開くだけ
 ## 重要な設計判断
 
 1. **審査用のページを、アプリ本体のリポジトリに入れなかった。**
-   本体（`claudecode-Secretary`）は private で家族のことが書いてある。
+   本体は private で、公開できない内容が入っている。
    審査に出すページは public でなければならないので、入れ物を分けた。
 2. **ここには個人が特定できるものを置かない。** 連絡先はこのアプリ専用に作ったアドレス。
 3. **素の HTML のまま置く。** ビルドを挟むと、審査で出す URL が壊れたときに切り分けが増える。
